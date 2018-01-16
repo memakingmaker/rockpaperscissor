@@ -43,28 +43,50 @@ function play( playerselection, computerselection ){
 
 var computerScore = 0;
 var userScore = 0;
-function singlePlay(){
-  let userInput = prompt("Type your turn");
-  let compInput = computerPlay();
+
+function singlePlay( userInput, compInput ){
   let win = play( userInput, compInput );
-  
-  console.log( `Computer: ${compInput} || You: ${userInput}` )
-  switch( win ){
+   
+  return win; 
+}
+
+const playButtons = Array.from( document.querySelectorAll('button') );
+playButtons.forEach( playButton => playButton.addEventListener( 'click', playRound ) );
+
+function playRound( e ){
+
+  let computerTurn = computerPlay();
+  let userTurn = e.target.id;
+  let result;
+
+  const computerTurnDiv = document.querySelector('#computerPlay');
+  const singlePlayResultDiv = document.querySelector('#singlePlayResult');
+  const scoreDiv = document.querySelector('#score');
+
+  switch( play( userTurn, computerTurn ) ){
     case 0:
-      console.log("DRAW");
+      result = "It's DRAW";
       break;
     case 1:
-      console.log("YOU WIN!!!");
+      result = "You WIN!!!";
       userScore++;
+      computerPlay
       break;
     case -1:
-      console.log("YOU LOSE!!!");
+      result = "You LOSE!!!";
       computerScore++;
       break;
   }
-}
-for( i = 0; i <= 4; i++)
-  singlePlay();
+  
+  computerTurnDiv.textContent = `Computer's move is ${computerTurn}`;
+  singlePlayResultDiv.textContent = result;
+  scoreDiv.textContent = `User: ${userScore}  || Computer: ${computerScore}`; 
+   
+  if( Math.max( computerScore, userScore ) >= 5 ){
+    scoreDiv.textContent = "The winner is : " + ( userScore > computerScore ? "YOU" : "Computer" ) + ". Game will reset";
+    
+    userScore = 0;
+    computerScore = 0;
+  }
 
-console.log(`COMPUTER: ${computerScore}`);
-console.log(`YOU: ${userScore}`);
+}
